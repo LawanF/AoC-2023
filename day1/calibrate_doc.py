@@ -1,5 +1,6 @@
 import time
 
+# to measure runtime
 start_time = time.time()
 
 input = open("input1.txt", "r").read().split("\n")
@@ -49,4 +50,4 @@ print("Answer is " + str(finAnswer) + ".")
 
 end_time = time.time()
 
-print("Runtime is: " + str(round(end_time - start_time, 5)) + " seconds.")
+print("Runtime is: " + str(round(end_time - start_time, 5) * 1000) + " miliseconds.")
