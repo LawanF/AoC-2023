@@ -4,7 +4,7 @@ import time
 
 start_time = time.time()
 
-input = open("./input.txt", "r").read().split("\n")
+input = open("input2.txt", "r").read().split("\n")
 
 red_lim = 12
 green_lim = 13
