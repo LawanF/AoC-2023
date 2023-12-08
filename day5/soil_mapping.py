@@ -53,7 +53,25 @@ def part1():
     loc_numbers = [s[-1] for s in mapping]
     print(min(loc_numbers))
 
+seeds = input[0].split(":")[1][1:].split(" ")
+seed_ranges = []
+for i in range(0, len(seeds)//2 + 1, 2):
+    start, length = (seeds[i], seeds[i + 1])
+    seed_ranges.append((int(start), int(start) + int(length)))
+# format is [(start, end)]
 
+inputMod1 = [s for s in input[2:] if s[-1:] != ":"]
+
+def string_to_range(s):
+    if s == "":
+        return s
+    else:
+        dest, sour, size = [int(i) for i in s.split(" ")]
+        return [(dest, dest + size), (sour, sour + size)]
+
+inputMod2 = [string_to_range(s) for s in inputMod1]
+print(inputMod2)
+# format is [[(start, end)]]
 
 end_time = timeit.default_timer()
 print(end_time - start_time)
