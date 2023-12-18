@@ -55,26 +55,70 @@ def part1():
 
 seeds = input[0].split(":")[1][1:].split(" ")
 seed_ranges = []
-for i in range(0, len(seeds)//2 + 1, 2):
+for i in range(0, len(seeds), 2):
     start, length = (seeds[i], seeds[i + 1])
     seed_ranges.append((int(start), int(start) + int(length)))
 # format is [(start, end)]
 
 inputMod1 = [s for s in input[2:] if s[-1:] != ":"]
 
+
 def string_to_range(s):
     if s == "":
         return s
     else:
         dest, sour, size = [int(i) for i in s.split(" ")]
-        return [(dest, dest + size), (sour, sour + size)]
+        return [(dest, dest + size - 1), (sour, sour + size - 1)]
 
 inputMod2 = [string_to_range(s) for s in inputMod1]
-print(inputMod2)
-# format is [[(start, end)]]
 
-end_time = timeit.default_timer()
-print(end_time - start_time)
+inputMod3 = []
+res1 = []
+for i in inputMod2:
+    if i == '':
+        inputMod3.append(res1)
+        res1 = []
+    else:
+        res1 += i
+inputMod3.append(res1)
+print(inputMod3)
+# format is [[(s_start, s_end), (d_start, d_end), ...], ...]
+
+mapping = [[s] for s in seed_ranges]
+print(mapping)
+
+# finds and returns overlap and residual range from two ranges
+# for overlap, maps to d_r
+# format is (res1, res2, mapped_range)
+def map_rest(m_r, d_r, s_r):
+    m_start, m_end = m_r
+    s_start, s_end = s_r
+    d_start, d_end = d_r
+    shift = s_start - d_start
+    o_start = max(m_start, s_start)
+    o_end = min(m_end, s_end)
+    if o_end < o_start:
+        return (m_r, None, None)
+    elif m_start < o_start and o_end < m_end:
+        return ((m_start, o_start), (o_end, m_end), (o_start, o_end))
+    elif o_start <= m_start and o_end < m_end:
+        return (None, (o_end, m_end), (o_start, o_end))
+    elif m_start < o_start and m_end < o_end:
+        return((m_start, o_start), None, (o_start, o_end))
+    
+
+for l_ind, line in enumerate(inputMod3):
+    for m_list in mapping:
+        m_start, m_end = m_list[-1] 
+        for d_ind in range(0, len(line), 2):
+            
+
+
+        
+
+
+# end_time = timeit.default_timer()
+# print(end_time - start_time)
 
 
 
