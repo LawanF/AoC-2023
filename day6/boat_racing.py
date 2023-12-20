@@ -21,19 +21,23 @@ records = inp[1].split()[1:]
 # We will simply solve the inequality above for b, and then round these
 # boundaries appropriately. This is done using find_bounds()
 
-# Returns true if given b gives a longer distance than record
-# for a given time and record
+# function to find bounds of inequality
+def find_bounds(t, r):
+    return (t/2 - ((t/2) ** 2 - r) ** (1/2), t/2 + ((t/2) ** 2 - r) ** (1/2))
+
 def part1():
     
-    def find_bounds(t, r):
-        return (t/2 - ((t/2) ** 2 - r) ** (1/2), t/2 + ((t/2) ** 2 - r) ** (1/2))
     
     ways = []
     for ind, t_str in enumerate(times):
         t = int(t_str)
         r = int(records[ind])
         low, high = find_bounds(t, r)
+
+        # we append the number of ways to ways
         ways.append(math.trunc(high) - math.ceil(low) + 1)
+        # high bound is truncated as it has to be lower to be quicker
+        # we use ceiling on low bound because it has to be higher
     
     result = 1
     for w in ways:
@@ -43,6 +47,7 @@ def part1():
     
 
 def part2():
+    # further parsing of input
     time = ""
     record = ""
     for t in times:
@@ -51,9 +56,8 @@ def part2():
         record += r
     time = int(time)
     record = int(record)
-    def find_bounds(t, r):
-        return (t/2 - ((t/2) ** 2 - r) ** (1/2), t/2 + ((t/2) ** 2 - r) ** (1/2))
 
+    # applying the same principle, but only for the one race
     low, high = find_bounds(time, record)
     return math.trunc(high) - math.ceil(low) + 1
 
