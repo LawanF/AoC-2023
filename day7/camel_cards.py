@@ -1,5 +1,7 @@
 import enum
+import timeit
 
+start_time = timeit.default_timer()
 # --- PARSING INPUT ---
 inp = open('input7.txt', 'r').read().splitlines()
 
@@ -9,10 +11,10 @@ hands = [i[0] for i in split]
 bids = [i[1] for i in split]
 
 card_values = {
-    'A' : 11,
-    'K' : 10,
-    'Q' : 9,
-    'J' : -1,
+    'A' : 12,
+    'K' : 11,
+    'Q' : 10,
+    'J' : 9,
     'T' : 8,
     '9' : 7, 
     '8' : 6, 
@@ -34,41 +36,65 @@ hand_values = {
     'HC' : 0
 }
 
-hand_info = []
-
-for ind, h in enumerate(hands):
-    c_count = [0 for _ in range(0, 12)]
-    b = bids[ind]
-    val = 'HC'
-    j_count = 0
-    for c in h:
-        if c == 'J':
-            j_count += 1
-        else:
+def sort_hand_1():
+    h_info = []
+    for ind, h in enumerate(hands):
+        c_count = [0 for _ in range(0, card_values['A'] + 1)]
+        b = bids[ind]
+        val = 'HC'
+        for c in h:
             c_count[card_values[c]] += 1
 
-    m = max(c_count)
-    print(c_count[c_count.index(m)])
-    c_count[c_count.index(m)] = m + j_count
-    print(c_count[c_count.index(m + j_count)])
-    print("----")
+        if 5 in c_count:
+            val = '5oK'
+        elif 4 in c_count:
+            val = '4oK'
+        elif 3 in c_count and 2 in c_count:
+            val = 'FH'
+        elif 3 in c_count:
+            val = '3oK'
+        elif 2 in c_count:
+            c_count.remove(2)
+            if 2 in c_count:
+                val = '2P'
+            else:
+                val = '1P'
+        
+        h_info.append(val)
+    return h_info
 
-    if 5 in c_count:
-        val = '5oK'
-    elif 4 in c_count:
-        val = '4oK'
-    elif 3 in c_count and 2 in c_count:
-        val = 'FH'
-    elif 3 in c_count:
-        val = '3oK'
-    elif 2 in c_count:
-        c_count.remove(2)
-        if 2 in c_count:
-            val = '2P'
-        else:
-            val = '1P'
-    
-    hand_info.append(val)
+def sort_hand_2():
+    h_info = []
+    for ind, h in enumerate(hands):
+        c_count = [0 for _ in range(0, card_values['A'] + 1)]
+        b = bids[ind]
+        val = 'HC'
+        j_count = 0
+        for c in h:
+            if c == 'J':
+                j_count += 1
+            else:
+                c_count[card_values[c]] += 1
+        
+        c_count[c_count.index(max(c_count))] = max(c_count) + j_count
+
+        if 5 in c_count:
+            val = '5oK'
+        elif 4 in c_count:
+            val = '4oK'
+        elif 3 in c_count and 2 in c_count:
+            val = 'FH'
+        elif 3 in c_count:
+            val = '3oK'
+        elif 2 in c_count:
+            c_count.remove(2)
+            if 2 in c_count:
+                val = '2P'
+            else:
+                val = '1P'
+        
+        h_info.append(val)
+    return h_info
 
 # Replaces J
 
@@ -100,6 +126,11 @@ def insert_sort(h_ind, l):
         return l[0:1] + insert_sort(h_ind, l[1:])
 
 def part1():
+    card_values['A'] = 12
+    card_values['K'] = 11
+    card_values['Q'] = 10
+    card_values['J'] = 9
+    sort_hand_1()
     results = []
     for h in range(0, len(hands)):
         results = insert_sort(h, results)
@@ -107,8 +138,29 @@ def part1():
     bid_results = [int(bids[results[i]]) * (i + 1) for i in range(0, len(results))]
     return sum(bid_results)
 
-print(part1())
+def part2():
+    card_values['A'] = 11
+    card_values['K'] = 10
+    card_values['Q'] = 9
+    card_values['J'] = -1
+
+    sort_hand_2()
+    results = []
+    for h in range(0, len(hands)):
+        results = insert_sort(h, results)
+
+    bid_results = [int(bids[results[i]]) * (i + 1) for i in range(0, len(results))]
+    return sum(bid_results)
 
 
 
+hand_info = sort_hand_1()
+print(f"Answer to part 1 is: {part1()}.") # look up f strings later
+
+hand_info = sort_hand_2()
+print(f"Answer to part 2 is: {part2()}.")
+
+end_time = timeit.default_timer() - start_time
+
+print(f"Runtime is: {end_time * 1000:.5f} miliseconds.")
 
